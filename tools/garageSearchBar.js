@@ -1,5 +1,5 @@
 
-function garageSearchBar(anchor_element) {
+function garageSearchBar(anchorElement) {
     let cars = document.querySelector("#content > div:nth-child(3) > div.col-lg-8 > div");
     let searchBar = document.createElement("input");
     searchBar.type = "search";
@@ -9,11 +9,11 @@ function garageSearchBar(anchor_element) {
     searchBar.onchange = function() {
         Array.from(cars.children).forEach((child) => {
             let carLink = child.children[0].children[0].children[0];
-            carLink.style.visibility = carLink.anchor_element.toLowerCase().includes(searchBar.value.toLowerCase()) ? "visible" : "hidden";
+            child.style.visibility = carLink.title.toLowerCase().includes(searchBar.value.toLowerCase()) ? "visible" : "hidden";
         });
     }
 
-    anchor_element.insertBefore(searchBar, anchor_element.firstChild);
+    anchorElement.insertBefore(searchBar, anchorElement.firstChild);
 }
 
 function start() {
