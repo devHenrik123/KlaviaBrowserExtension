@@ -15,7 +15,7 @@ async function questsSearchBar(anchorElement) {
             let questDescription = questData.toLowerCase();
             let questTitle = questRow.outerHTML.toLowerCase();
             let matchesSearchString = questDescription.includes(searchString) || questTitle.includes(searchString);
-            questRow.style.visibility = (!isValidSearch || (isValidSearch && matchesSearchString)) ? "visible" : "hidden";
+            questRow.style.display = (!isValidSearch || (isValidSearch && matchesSearchString)) ? "table-row" : "none";
         });
     }
     anchorElement.insertBefore(searchBar, anchorElement.firstChild);
