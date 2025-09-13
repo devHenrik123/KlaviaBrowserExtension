@@ -1,16 +1,18 @@
 
-
+const checkboxAutoRace = document.getElementById("checkboxAutoRace");
 const checkboxGarageSearchBar = document.getElementById("checkboxGarageSearchBar");
 const checkboxQuestsSearchBar = document.getElementById("checkboxQuestsSearchBar");
 
 function save() {
     chrome.storage.sync.set({
+        autoRaceEnabled: checkboxAutoRace.checked,
         garageSearchBarEnabled: checkboxGarageSearchBar.checked,
-        questsSearchBarEnabled: checkboxQuestsSearchBar.checked
+        questsSearchBarEnabled: checkboxQuestsSearchBar.checked,
     });
 }
 
 [
+    checkboxAutoRace,
     checkboxGarageSearchBar,
     checkboxQuestsSearchBar
 ].forEach( e => {
@@ -18,7 +20,8 @@ function save() {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    chrome.storage.sync.get(["garageSearchBarEnabled", "questsSearchBarEnabled"], (data) => {
+    chrome.storage.sync.get(["autoRaceEnabled", "garageSearchBarEnabled", "questsSearchBarEnabled"], (data) => {
+        checkboxAutoRace.checked = data.autoRaceEnabled ?? false;
         checkboxGarageSearchBar.checked = data.garageSearchBarEnabled ?? true;
         checkboxQuestsSearchBar.checked = data.questsSearchBarEnabled ?? true;
     });

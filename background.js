@@ -1,7 +1,8 @@
 
 const ROUTING_MAP = {
     "/racer/garage": "tools/garageSearchBar.js",
-    "/racer/quests": "tools/questsSearchBar.js"
+    "/racer/quests": "tools/questsSearchBar.js",
+    "/race": "tools/race.js"
 };
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
