@@ -9,7 +9,7 @@ function garageSearchBar(anchorElement) {
     searchBar.onchange = function() {
         Array.from(cars.children).forEach((child) => {
             let carLink = child.children[0].children[0].children[0];
-            child.style.visibility = carLink.title.toLowerCase().includes(searchBar.value.toLowerCase()) ? "visible" : "hidden";
+            child.style.display = carLink.title.toLowerCase().includes(searchBar.value.toLowerCase()) ? "block" : "none";
         });
     }
 
