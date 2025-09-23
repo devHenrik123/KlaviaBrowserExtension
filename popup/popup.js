@@ -1,10 +1,4 @@
 
-const CheckboxAutoRace = document.getElementById("checkboxAutoRace");
-const CheckboxGarageSearchBar = document.getElementById("checkboxGarageSearchBar");
-const CheckboxQuestsSearchBar = document.getElementById("checkboxQuestsSearchBar");
-const CheckboxRaceProgressIndicator = document.getElementById("checkboxRaceProgressBar");
-const CheckboxTypingTrail = document.getElementById("checkboxTypingTrail");
-
 
 class Setting {
     constructor(name, defaultValue) {
@@ -15,11 +9,11 @@ class Setting {
 
 
 const DefaultSettings = new Map([
-    [CheckboxAutoRace,              new Setting("autoRaceEnabled",              false   )],
-    [CheckboxGarageSearchBar,       new Setting("garageSearchBarEnabled",       true    )],
-    [CheckboxQuestsSearchBar,       new Setting("questsSearchBarEnabled",       true    )],
-    [CheckboxRaceProgressIndicator, new Setting("raceProgressIndicatorEnabled", true    )],
-    [CheckboxTypingTrail,           new Setting("typingTrailEnabled",           true    )]
+    [document.getElementById("checkboxAutoRace"),               new Setting("autoRaceEnabled",              false   )],
+    [document.getElementById("checkboxGarageSearchBar"),        new Setting("garageSearchBarEnabled",       true    )],
+    [document.getElementById("checkboxQuestsSearchBar"),        new Setting("questsSearchBarEnabled",       true    )],
+    [document.getElementById("checkboxRaceProgressBar"),        new Setting("raceProgressIndicatorEnabled", true    )],
+    [document.getElementById("checkboxTypingTrail"),            new Setting("typingTrailEnabled",           true    )]
 ]);
 
 
