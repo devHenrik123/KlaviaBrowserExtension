@@ -9,7 +9,9 @@
         "tabs"
     ],
     "host_permissions": [
-        "*://klavia.io/*"
+        "*://klavia.io/*",
+        "*://playklavia.com/*",
+        "*://ntcomps.com/*"
     ],
     "action": {
         "default_popup": "popup/popup.html",
