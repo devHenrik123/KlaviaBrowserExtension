@@ -1,36 +1,46 @@
 
-const checkboxAutoRace = document.getElementById("checkboxAutoRace");
-const checkboxGarageSearchBar = document.getElementById("checkboxGarageSearchBar");
-const checkboxQuestsSearchBar = document.getElementById("checkboxQuestsSearchBar");
-const checkboxRaceProgressIndicator = document.getElementById("checkboxRaceProgressBar");
-const checkboxTypingTrail = document.getElementById("checkboxTypingTrail");
 
-function save() {
-    chrome.storage.sync.set({
-        autoRaceEnabled: checkboxAutoRace.checked,
-        garageSearchBarEnabled: checkboxGarageSearchBar.checked,
-        questsSearchBarEnabled: checkboxQuestsSearchBar.checked,
-        raceProgressIndicatorEnabled: checkboxRaceProgressIndicator.checked,
-        typingTrailEnabled: checkboxTypingTrail.checked,
+class Setting {
+    constructor(name, defaultValue) {
+        this.name = name,
+        this.defaultValue = defaultValue;
+    }
+}
+
+
+const DefaultSettings = new Map([
+    [document.getElementById("checkboxAutoRace"),               new Setting("autoRaceEnabled",              false   )],
+    [document.getElementById("checkboxGarageSearchBar"),        new Setting("garageSearchBarEnabled",       true    )],
+    [document.getElementById("checkboxQuestsSearchBar"),        new Setting("questsSearchBarEnabled",       true    )],
+    [document.getElementById("checkboxRaceProgressBar"),        new Setting("raceProgressIndicatorEnabled", true    )],
+    [document.getElementById("checkboxTypingTrail"),            new Setting("typingTrailEnabled",           true    )]
+]);
+
+
+function saveSettings() {
+    chrome.storage.sync.set(
+        Object.fromEntries(
+            [...DefaultSettings].map( ([checkbox, setting]) => [setting.name, checkbox.checked] )
+        )
+    );
+}
+
+
+function loadSettings() {
+    let settingNames = [...DefaultSettings.values()].map( (setting) => setting.name );
+
+    chrome.storage.sync.get(settingNames, (data) => {
+        for ( const [checkbox, setting] of DefaultSettings.entries() ) {
+            checkbox.checked = data[setting.name] ?? setting.defaultValue;
+        }
     });
 }
 
-[
-    checkboxAutoRace,
-    checkboxGarageSearchBar,
-    checkboxQuestsSearchBar,
-    checkboxRaceProgressIndicator,
-    checkboxTypingTrail
-].forEach( e => {
-    e.addEventListener("click", save)
+
+// Init event listeners: ( Yes, I write comments. This is not AI generated! )
+
+[...DefaultSettings.keys()].forEach( e => {
+    e.addEventListener("click", saveSettings)
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    chrome.storage.sync.get(["autoRaceEnabled", "garageSearchBarEnabled", "questsSearchBarEnabled", "raceProgressIndicatorEnabled", "typingTrailEnabled"], (data) => {
-        checkboxAutoRace.checked = data.autoRaceEnabled ?? false;
-        checkboxGarageSearchBar.checked = data.garageSearchBarEnabled ?? true;
-        checkboxQuestsSearchBar.checked = data.questsSearchBarEnabled ?? true;
-        checkboxRaceProgressIndicator.checked = data.raceProgressIndicatorEnabled ?? true;
-        checkboxTypingTrail.checked = data.typingTrailEnabled ?? true;
-    });
-});
+document.addEventListener("DOMContentLoaded", loadSettings); 

@@ -28,7 +28,7 @@
             raceAgainButton.click();
         }
 
-        if (window.location.href.includes("klavia.io/race")) {
+        if (window.location.href.endsWith("/race")) {
             setTimeout(autorace, 200);
         }
     }
