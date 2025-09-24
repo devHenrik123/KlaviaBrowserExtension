@@ -13,12 +13,14 @@ const DefaultSettings = new Map([
     [document.getElementById("checkboxGarageSearchBar"),        new Setting("garageSearchBarEnabled",       true    )],
     [document.getElementById("checkboxQuestsSearchBar"),        new Setting("questsSearchBarEnabled",       true    )],
     [document.getElementById("checkboxRaceProgressBar"),        new Setting("raceProgressIndicatorEnabled", true    )],
-    [document.getElementById("checkboxTypingTrail"),            new Setting("typingTrailEnabled",           true    )]
+    [document.getElementById("checkboxTypingTrail"),            new Setting("typingTrailEnabled",           true    )],
+    [document.getElementById("checkbox24HourLeaderboard"),      new Setting("show24HourLeaderboardEnabled", true    )],
+    [document.getElementById("checkboxActiveQuest"),            new Setting("showActiveQuestEnabled",       true    )],
 ]);
 
 
 function saveSettings() {
-    chrome.storage.sync.set(
+    chrome.storage.local.set(
         Object.fromEntries(
             [...DefaultSettings].map( ([checkbox, setting]) => [setting.name, checkbox.checked] )
         )
@@ -29,7 +31,7 @@ function saveSettings() {
 function loadSettings() {
     let settingNames = [...DefaultSettings.values()].map( (setting) => setting.name );
 
-    chrome.storage.sync.get(settingNames, (data) => {
+    chrome.storage.local.get(settingNames, (data) => {
         for ( const [checkbox, setting] of DefaultSettings.entries() ) {
             checkbox.checked = data[setting.name] ?? setting.defaultValue;
         }

@@ -1,7 +1,10 @@
 (() => {
     const ID_PROGRESS = "KlaviaExtension_RaceProgress";
     const CLASS_LETTER_TYPED_ANIMATION = "KlaviaExtension_LetterTypedAnimation"
-    
+
+    const SETTING_LEADERBOARD_POSITION = "RaceJS_SettingLeaderboardPosition"
+    const SETTING_ACTIVE_QUEST_POSITION = "RaceJS_SettingActiveQuestPosition"
+
     const EMOJIS = ["✨", "💥", "🔥", "💫", "🌟", "🎉", "⚡", "🚀", "💨"];
 
     function isElementVisible(el) {
@@ -38,7 +41,11 @@
         let current = document.getElementsByClassName("highlight-letter")[0] ?? document.getElementsByClassName("incorrect-letter")[0];
         if (current) {
             let progressIndicator = document.getElementById(ID_PROGRESS);
-            progressIndicator.style.width = `${Math.ceil(letters.indexOf(current) / letters.length * 100)}%`;
+            let progress = Math.ceil(letters.indexOf(current) / letters.length * 100);
+            progressIndicator.style.width = `${progress}%`;
+            if (progress == 100) {
+                return;
+            }
         }
 
         setTimeout(updateProgressBar, 200);
@@ -95,6 +102,93 @@
         setTimeout(() => renderGfx(current), 100);
     }
 
+
+    async function createLeaderboardFrame() {
+        const src = chrome.runtime.getURL("../util/dynamicFrame.js");
+        const module = await import(src);
+        const dynamicFrame = new module.DynamicFrame("24h Leaderboard");
+
+        const listener = (x, y, width, height) => {
+            chrome.storage.local.set(
+                {
+                    [SETTING_LEADERBOARD_POSITION]: [x, y, width, height]
+                }
+            );
+        }
+        dynamicFrame.addDragListener(listener);
+        dynamicFrame.addResizeListener(listener);
+
+        chrome.storage.local.get([SETTING_LEADERBOARD_POSITION], (data) => {
+            const position = data[SETTING_LEADERBOARD_POSITION] ?? [100, 100, 400, 300];
+            console.log(`Frame position: ${position}`);
+            dynamicFrame.move(position[0], position[1]);
+            dynamicFrame.resize(position[2], position[3]);
+        });
+
+
+        try {
+            const response = await fetch("https://klavia.io/leaderboards/top_racers?tp=24h");
+            const html = await response.text();
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const element = doc.querySelector("#leaderboards_table > div.table-responsive");
+            if (element) {
+                dynamicFrame.showElement(element);
+            } else {
+                dynamicFrame.showHtml(`<p>Element not found.</p>`);
+            }
+        } catch (error) {
+            dynamicFrame.showHtml(`<p>Error loading content: ${error.message}</p>`);
+        }
+        dynamicFrame.scale(.7);
+    }
+
+
+    async function createQuestsFrame() {
+    const src = chrome.runtime.getURL("../util/dynamicFrame.js");
+    const module = await import(src);
+    const dynamicFrame = new module.DynamicFrame("Active Quest");
+
+    const listener = (x, y, width, height) => {
+        chrome.storage.local.set(
+            {
+                [SETTING_ACTIVE_QUEST_POSITION]: [x, y, width, height]
+            }
+        );
+    }
+    dynamicFrame.addDragListener(listener);
+    dynamicFrame.addResizeListener(listener);
+
+    chrome.storage.local.get([SETTING_ACTIVE_QUEST_POSITION], (data) => {
+        const position = data[SETTING_ACTIVE_QUEST_POSITION] ?? [100, 100, 400, 300];
+        console.log(`Frame position: ${position}`);
+        dynamicFrame.move(position[0], position[1]);
+        dynamicFrame.resize(position[2], position[3]);
+    });
+
+    try {
+        const response = await fetch("https://klavia.io/racer/quests");
+        const html = await response.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const element = doc.querySelector("#content > div:nth-child(3) > div.col-12.mb-5 > table");
+        if (element) {
+            dynamicFrame.showElement(element);
+        } else {
+            dynamicFrame.showHtml(`<p>Element not found.</p>`);
+        }
+    } catch (error) {
+        dynamicFrame.showHtml(`<p>Error loading content: ${error.message}</p>`);
+    }
+    dynamicFrame.scale(.7);
+}
+
+
+
     // ==============================================================================================================================================
     // Initialize:
     // ==============================================================================================================================================
@@ -137,16 +231,27 @@
     `;
     document.head.appendChild(style);
 
-    chrome.storage.sync.get(["autoRaceEnabled", "raceProgressIndicatorEnabled", "typingTrailEnabled"], (data) => {
+    chrome.storage.local.get(["autoRaceEnabled", "raceProgressIndicatorEnabled", "typingTrailEnabled", "show24HourLeaderboardEnabled", "showActiveQuestEnabled"], (data) => {
         Promise.all([
             new Promise(resolve => {
                 if (data.autoRaceEnabled ?? false) autorace();
+                resolve();
             }),
             new Promise(resolve => {
                 if (data.raceProgressIndicatorEnabled ?? false) progressBar();
+                resolve();
             }),
             new Promise(resolve => {
                 if (data.typingTrailEnabled ?? false) renderGfx();
+                resolve();
+            }),
+            new Promise(resolve => {
+                if (data.show24HourLeaderboardEnabled ?? false) createLeaderboardFrame();
+                resolve();
+            }),
+            new Promise(resolve => {
+                if (data.showActiveQuestEnabled ?? false) createQuestsFrame();
+                resolve();
             })
         ]);
     });
