@@ -15,6 +15,7 @@ const DefaultSettings = new Map([
     [document.getElementById("checkboxRaceProgressBar"),        new Setting("raceProgressIndicatorEnabled", true    )],
     [document.getElementById("checkboxTypingTrail"),            new Setting("typingTrailEnabled",           true    )],
     [document.getElementById("checkbox24HourLeaderboard"),      new Setting("show24HourLeaderboardEnabled", true    )],
+    [document.getElementById("checkboxActiveQuest"),            new Setting("showActiveQuestEnabled",       true    )],
 ]);
 
 

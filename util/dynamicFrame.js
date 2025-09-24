@@ -1,5 +1,5 @@
 export class DynamicFrame {
-    constructor(title = "Dynamic Frame") {
+    constructor(title = "Dynamic Frame", width = 400, height = 300) {
         this.isDragging = false;
         this.isResizing = false;
         this.resizeDir = null;
@@ -10,14 +10,15 @@ export class DynamicFrame {
         this.startX = 0;
         this.startY = 0;
         this.dragListeners = [];
+        this.resizeListeners = [];
 
         this.delegate = document.createElement('div');
         Object.assign(this.delegate.style, {
             position: 'fixed',
             top: '100px',
             left: '100px',
-            width: '400px',
-            height: '300px',
+            width: `${width}px`,
+            height: `${height}px`,
             zIndex: '9999',
             background: '#2a2a2a',
             border: '3px solid #1a1a1a',
@@ -62,7 +63,8 @@ export class DynamicFrame {
                 const newLeft = e.clientX - this.offsetX;
                 const newTop = e.clientY - this.offsetY;
                 this.move(newLeft, newTop);
-                this.dragListeners.forEach(l => l(newLeft, newTop));
+                let size = this.size();
+                this.dragListeners.forEach(l => l(newLeft, newTop, size[0], size[1]));
             } else if (this.isResizing && this.resizeDir) {
                 this.performResize(e);
             }
@@ -143,11 +145,26 @@ export class DynamicFrame {
         this.delegate.style.height = `${Math.max(100, newHeight)}px`;
         this.delegate.style.left = `${newLeft}px`;
         this.delegate.style.top = `${newTop}px`;
+    
+        this.resizeListeners.forEach(l => l(newLeft, newTop, newWidth, newHeight));
+    }
+
+    size() {
+        return [
+            this.delegate.offsetWidth,
+            this.delegate.offsetHeight
+        ]
+    }
+
+    resize(width, height) {
+        this.delegate.style.width = `${width}px`;
+        this.delegate.style.height = `${height}px`;
     }
 
     move(x, y) {
-        const frameWidth = this.delegate.offsetWidth;
-        const frameHeight = this.delegate.offsetHeight;
+        const size = this.size();
+        const frameWidth = size[0];
+        const frameHeight = size[1];
 
         const clampedLeft = Math.max(0, Math.min(x, window.innerWidth - frameWidth));
         const clampedTop = Math.max(0, Math.min(y, window.innerHeight - frameHeight));
@@ -176,6 +193,10 @@ export class DynamicFrame {
 
     addDragListener(listener) {
         this.dragListeners.push(listener);
+    }
+
+    addResizeListener(listener) {
+        this.resizeListeners.push(listener);
     }
 
 }

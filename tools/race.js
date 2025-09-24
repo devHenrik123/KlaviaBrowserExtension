@@ -3,6 +3,7 @@
     const CLASS_LETTER_TYPED_ANIMATION = "KlaviaExtension_LetterTypedAnimation"
 
     const SETTING_LEADERBOARD_POSITION = "RaceJS_SettingLeaderboardPosition"
+    const SETTING_ACTIVE_QUEST_POSITION = "RaceJS_SettingActiveQuestPosition"
 
     const EMOJIS = ["✨", "💥", "🔥", "💫", "🌟", "🎉", "⚡", "🚀", "💨"];
 
@@ -107,19 +108,23 @@
         const module = await import(src);
         const dynamicFrame = new module.DynamicFrame("24h Leaderboard");
 
-        dynamicFrame.addDragListener( (x, y) => {
+        const listener = (x, y, width, height) => {
             chrome.storage.local.set(
                 {
-                    [SETTING_LEADERBOARD_POSITION]: [x, y]
+                    [SETTING_LEADERBOARD_POSITION]: [x, y, width, height]
                 }
             );
-        });
+        }
+        dynamicFrame.addDragListener(listener);
+        dynamicFrame.addResizeListener(listener);
 
         chrome.storage.local.get([SETTING_LEADERBOARD_POSITION], (data) => {
-            const position = data[SETTING_LEADERBOARD_POSITION] ?? [100, 100];
+            const position = data[SETTING_LEADERBOARD_POSITION] ?? [100, 100, 400, 300];
             console.log(`Frame position: ${position}`);
             dynamicFrame.move(position[0], position[1]);
+            dynamicFrame.resize(position[2], position[3]);
         });
+
 
         try {
             const response = await fetch("https://klavia.io/leaderboards/top_racers?tp=24h");
@@ -137,8 +142,50 @@
         } catch (error) {
             dynamicFrame.showHtml(`<p>Error loading content: ${error.message}</p>`);
         }
-        dynamicFrame.scale(.5);
+        dynamicFrame.scale(.7);
     }
+
+
+    async function createQuestsFrame() {
+    const src = chrome.runtime.getURL("../util/dynamicFrame.js");
+    const module = await import(src);
+    const dynamicFrame = new module.DynamicFrame("Active Quest");
+
+    const listener = (x, y, width, height) => {
+        chrome.storage.local.set(
+            {
+                [SETTING_ACTIVE_QUEST_POSITION]: [x, y, width, height]
+            }
+        );
+    }
+    dynamicFrame.addDragListener(listener);
+    dynamicFrame.addResizeListener(listener);
+
+    chrome.storage.local.get([SETTING_ACTIVE_QUEST_POSITION], (data) => {
+        const position = data[SETTING_ACTIVE_QUEST_POSITION] ?? [100, 100, 400, 300];
+        console.log(`Frame position: ${position}`);
+        dynamicFrame.move(position[0], position[1]);
+        dynamicFrame.resize(position[2], position[3]);
+    });
+
+    try {
+        const response = await fetch("https://klavia.io/racer/quests");
+        const html = await response.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const element = doc.querySelector("#content > div:nth-child(3) > div.col-12.mb-5 > table");
+        if (element) {
+            dynamicFrame.showElement(element);
+        } else {
+            dynamicFrame.showHtml(`<p>Element not found.</p>`);
+        }
+    } catch (error) {
+        dynamicFrame.showHtml(`<p>Error loading content: ${error.message}</p>`);
+    }
+    dynamicFrame.scale(.7);
+}
 
 
 
@@ -184,7 +231,7 @@
     `;
     document.head.appendChild(style);
 
-    chrome.storage.local.get(["autoRaceEnabled", "raceProgressIndicatorEnabled", "typingTrailEnabled", "show24HourLeaderboardEnabled"], (data) => {
+    chrome.storage.local.get(["autoRaceEnabled", "raceProgressIndicatorEnabled", "typingTrailEnabled", "show24HourLeaderboardEnabled", "showActiveQuestEnabled"], (data) => {
         Promise.all([
             new Promise(resolve => {
                 if (data.autoRaceEnabled ?? false) autorace();
@@ -200,6 +247,10 @@
             }),
             new Promise(resolve => {
                 if (data.show24HourLeaderboardEnabled ?? false) createLeaderboardFrame();
+                resolve();
+            }),
+            new Promise(resolve => {
+                if (data.showActiveQuestEnabled ?? false) createQuestsFrame();
                 resolve();
             })
         ]);
