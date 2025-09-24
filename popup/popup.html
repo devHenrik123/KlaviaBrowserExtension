@@ -10,41 +10,57 @@
 <body>
     <h1>Klavia Settings</h1>
 
-    <label>
-        <input type="checkbox" id="checkboxAutoRace" />
-        Start Next Race Automatically
-    </label>
+    <details open>
+        <summary>Race</summary>
 
-    <label>
-        <input type="checkbox" id="checkboxGarageSearchBar" />
-        Garage Search Bar
-    </label>
+        <label>
+            <input type="checkbox" id="checkboxAutoRace" />
+            Start Next Race Automatically
+        </label>
 
+        <label>
+            <input type="checkbox" id="checkboxRaceProgressBar" />
+            Race Progress Indicator
+        </label>
 
-    <label>
-        <input type="checkbox" id="checkboxQuestsSearchBar" />
-        Quests Search Bar
-    </label>
+        <label>
+            <input type="checkbox" id="checkboxTypingTrail" />
+            Leave A Trial After Typed Letters
+        </label>
 
-    <label>
-        <input type="checkbox" id="checkboxRaceProgressBar" />
-        Race Progress Indicator
-    </label>
+        <label>
+            <input type="checkbox" id="checkbox24HourLeaderboard" />
+            Show 24h Leaderboard While Racing
+        </label>
 
-    <label>
-        <input type="checkbox" id="checkboxTypingTrail" />
-        Leave A Trail While Typing
-    </label>
+        <label>
+            <input type="checkbox" id="checkboxActiveQuest" />
+            Show Active Quest While Racing
+        </label>
 
-    <label>
-        <input type="checkbox" id="checkbox24HourLeaderboard" />
-        Show Leaderboard While Racing
-    </label>
+    </details>
 
-    <label>
-        <input type="checkbox" id="checkboxActiveQuest" />
-        Show Active Quest While Racing
-    </label>
+    <details>
+        <summary>Garage</summary>
+
+        <label>
+            <input type="checkbox" id="checkboxGarageSearchBar" />
+            Garage Search Bar
+        </label>
+
+    </details>
+
+    <details>
+        <summary>Quests</summary>
+
+        <label>
+            <input type="checkbox" id="checkboxQuestsSearchBar" />
+            Quests Search Bar
+        </label>
+
+    </details>
+
+    <button id="buttonReloadKlavia">Reload Klavia</button>
 
     <script src="popup.js"></script>
 </body>
