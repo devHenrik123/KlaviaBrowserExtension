@@ -25,6 +25,6 @@ function start() {
     }
 }
 
-chrome.storage.sync.get(["garageSearchBarEnabled"], (data) => { 
+chrome.storage.local.get(["garageSearchBarEnabled"], (data) => {
     if (data.garageSearchBarEnabled ?? false) start();
 });

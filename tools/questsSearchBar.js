@@ -39,6 +39,6 @@ function start() {
     }
 }
 
-chrome.storage.sync.get(["questsSearchBarEnabled"], (data) => { 
+chrome.storage.local.get(["questsSearchBarEnabled"], (data) => { 
     if (data.questsSearchBarEnabled ?? false) start();
 });
