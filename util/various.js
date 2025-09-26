@@ -1,4 +1,8 @@
 
+
+export const KlaviaDomains = ["klavia.io", "playklavia.com", "ntcomps.com"];
+
+
 export function isElementVisible(el) {
     if (!el) return false;
 
