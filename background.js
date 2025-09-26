@@ -1,9 +1,9 @@
 
 const ROUTING_MAP = new Map([
-    [ new RegExp( "^\/racer\/garage$"       ), "tools/garageSearchBar.js"   ],
-    [ new RegExp( "^\/racer\/quests$"       ), "tools/questsSearchBar.js"   ],
-    [ new RegExp( "^\/race$"                ), "tools/race.js"              ],
-    [ new RegExp( "^\/lobbies\/.{19}$"      ), "tools/lobbies.js"           ],
+    [ new RegExp( "^\/racer\/garage$"       ), "pages/garage.js"            ],
+    [ new RegExp( "^\/racer\/quests$"       ), "pages/quests.js"            ],
+    [ new RegExp( "^\/race$"                ), "pages/race.js"              ],
+    [ new RegExp( "^\/lobbies\/.{19}$"      ), "pages/lobbies.js"           ],
 ]);
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
