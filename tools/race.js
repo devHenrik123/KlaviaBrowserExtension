@@ -7,26 +7,13 @@
 
     const EMOJIS = ["✨", "💥", "🔥", "💫", "🌟", "🎉", "⚡", "🚀", "💨"];
 
-    function isElementVisible(el) {
-        if (!el) return false;
-
-        const style = window.getComputedStyle(el);
-        const rect = el.getBoundingClientRect();
-
-        return (
-            style.display !== 'none' &&
-            style.visibility !== 'hidden' &&
-            style.opacity !== '0' &&
-            rect.width > 0 &&
-            rect.height > 0 &&
-            rect.bottom > 0 &&
-            rect.right > 0
-        );
-    }
-
-
     function autorace() {
-        let raceAgainButton = document.querySelector("#race-again");
+        const src = chrome.runtime.getURL("../util/various.js");
+        const module = import(src);
+        const isElementVisible = module.isElementVisible;
+
+        const raceAgainButton = document.querySelector("#race-again");
+
         if (isElementVisible(raceAgainButton)) {
             raceAgainButton.click();
         }
