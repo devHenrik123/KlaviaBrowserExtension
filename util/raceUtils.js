@@ -110,8 +110,8 @@ async function createLeaderboardFrame() {
 
     chrome.storage.local.get([SETTING_LEADERBOARD_POSITION], (data) => {
         const position = data[SETTING_LEADERBOARD_POSITION] ?? [150, 150, 400, 300];
-        dynamicFrame.move(position[0], position[1]);
         dynamicFrame.resize(position[2], position[3]);
+        dynamicFrame.move(position[0], position[1]);
     });
 
 
@@ -152,8 +152,8 @@ async function createQuestsFrame() {
 
     chrome.storage.local.get([SETTING_ACTIVE_QUEST_POSITION], (data) => {
         const position = data[SETTING_ACTIVE_QUEST_POSITION] ?? [100, 100, 400, 300];
-        dynamicFrame.move(position[0], position[1]);
         dynamicFrame.resize(position[2], position[3]);
+        dynamicFrame.move(position[0], position[1]);
     });
 
     try {
