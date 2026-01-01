@@ -12,12 +12,10 @@
 
     const DefaultSettings = new Map([
         [document.getElementById("checkboxAutoRace"),           new Setting("autoRaceEnabled",              false   )],
-        [document.getElementById("checkboxGarageSearchBar"),    new Setting("garageSearchBarEnabled",       true    )],
-        [document.getElementById("checkboxQuestsSearchBar"),    new Setting("questsSearchBarEnabled",       true    )],
         [document.getElementById("checkboxRaceProgressBar"),    new Setting("raceProgressIndicatorEnabled", true    )],
         [document.getElementById("checkboxTypingTrail"),        new Setting("typingTrailEnabled",           true    )],
         [document.getElementById("checkbox24HourLeaderboard"),  new Setting("show24HourLeaderboardEnabled", true    )],
-        [document.getElementById("checkboxActiveQuest"),        new Setting("showActiveQuestEnabled",       true    )],
+        [document.getElementById("checkboxActiveQuest"),        new Setting("showQuestsDuringRaceEnabled",  true    )],
         [document.getElementById("checkboxLobbyAutoStartRace"), new Setting("lobbyAutoStartEnabled",        false   )],
     ]);
 

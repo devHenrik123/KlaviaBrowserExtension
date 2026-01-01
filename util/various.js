@@ -19,3 +19,9 @@ export function isElementVisible(el) {
         rect.right > 0
     );
 }
+
+
+export function addKeyboardControls() {
+    // TODO: Implement keyboard controls for klavia -> Easily navigate the entire website using the keyboard.
+}
+

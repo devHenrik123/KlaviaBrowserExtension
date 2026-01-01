@@ -16,7 +16,8 @@ async function autorace() {
     const raceAgainButton = document.querySelector("#race-again");
 
     if (isElementVisible(raceAgainButton)) {
-        raceAgainButton.click();
+        setTimeout(() => raceAgainButton.click(), 250);
+        return;
     }
 
     if (document.getElementById("game-container") !== undefined) {
@@ -122,7 +123,7 @@ async function createLeaderboardFrame() {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
 
-        const element = doc.querySelector("#leaderboards_table > div.table-responsive");
+        const element = doc.querySelector("#leaderboards_table > div.row > div > table");
         if (element) {
             dynamicFrame.showElement(element);
         } else {
@@ -163,7 +164,7 @@ async function createQuestsFrame() {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
 
-        const element = doc.querySelector("#content > div:nth-child(3) > div.col-12.mb-5 > table");
+        const element = doc.querySelector("#content > div:nth-child(3) > div");
         if (element) {
             dynamicFrame.showElement(element);
         } else {
@@ -224,7 +225,7 @@ export async function startDefaultRaceSession() {
             "raceProgressIndicatorEnabled",
             "typingTrailEnabled",
             "show24HourLeaderboardEnabled",
-            "showActiveQuestEnabled"
+            "showQuestsDuringRaceEnabled"
         ], resolve);
     });
     Promise.all([
@@ -232,6 +233,6 @@ export async function startDefaultRaceSession() {
         (settings.raceProgressIndicatorEnabled  ?? false) && progressBar(),
         (settings.typingTrailEnabled            ?? false) && renderGfx(),
         (settings.show24HourLeaderboardEnabled  ?? false) && createLeaderboardFrame(),
-        (settings.showActiveQuestEnabled        ?? false) && createQuestsFrame(),
+        (settings.showQuestsDuringRaceEnabled   ?? false) && createQuestsFrame(),
     ].filter(Boolean)).catch(console.error);
 };
