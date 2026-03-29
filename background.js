@@ -1,9 +1,14 @@
 
-const ROUTING_MAP = {
-    "/racer/garage": "tools/garageSearchBar.js",
-    "/racer/quests": "tools/questsSearchBar.js",
-    "/race": "tools/race.js"
-};
+const ROUTING_MAP = new Map([
+    [ new RegExp( "^\/race$"                ), "pages/race.js"              ],
+    [ new RegExp( "^\/lobbies\/.{19}$"      ), "pages/lobbies.js"           ],
+]);
+
+/*
+Might use this in the future:
+    [ new RegExp( "^\/racer\/garage$"       ), "pages/garage.js"            ],
+    [ new RegExp( "^\/racer\/quests$"       ), "pages/quests.js"            ],
+*/
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (
@@ -12,8 +17,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     ) {
         let url = new URL(tab.url);
 
-        for (const [route, scriptPath] of Object.entries(ROUTING_MAP)) {
-            if (url.pathname == route) {
+        for (const [routeRegex, scriptPath] of ROUTING_MAP) {
+            if (routeRegex.test(url.pathname)) {
                 chrome.scripting.executeScript({
                     target: { tabId: tabId },
                     files: [ scriptPath ]
